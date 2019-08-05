@@ -1,0 +1,4 @@
+bottle
+pymysql
+requests
+pyjwt
