@@ -3,9 +3,9 @@ import time
 class client:
     def __init__(self, id, profile_id = None):
         self.id = str(id)
-        self.profile_id = str(profile_id)
+        self.profile_id = None if profile_id is None else str(profile_id)
         self.electrode = {"update" : int(time.time())}
-        self.data = {"update" : int(time.time())}
+        self.data = {"update" : int(time.time()), "charge": 10}
         self.time = int(time.time())
 
     def create(self):
@@ -21,7 +21,7 @@ class client:
             "profile_id": self.profile_id,
             "electrodes": self.electrode,
             "data": self.data,
-            "time": self.time
+            "time": self.time,
         }, 200]
 
     def changepower(self, id_ele, pow):
@@ -33,5 +33,10 @@ class client:
 
     def setdata(self, data_id, data):
         self.data[str(data_id)] = int(data)
+        self.data["update"] = int(time.time())
+        return [True, [], None]
+
+    def setcharge(self, charge):
+        self.data["charge"] = int(charge)
         self.data["update"] = int(time.time())
         return [True, [], None]

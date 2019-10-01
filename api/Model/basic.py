@@ -1,17 +1,29 @@
 from bottle import request, response
+import os, datetime
 import json as JSON
 import jwt
 
 class auth:
     def gettoken(mypass):
+        secret =    str(os.getenv('API_SCRT', '!@ws4RT4ws212@#%'))
+        password =  str(os.getenv('API_PASS', 'password'))
         if mypass == password:
-            ret = jwt.encode({'pass': secret + "abcdefg132"}, secret, algorithm='HS256')
-        return [True, {"jwt": ret}, None]
+            ret = jwt.encode({'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1), 'password': hash(password + secret)}, secret).decode('utf-8')
+            return [True, {"jwt": ret}, None]
+        return [False, "Invalid password", 403]
 
     def verify(token):
-        if jwt.encode({'pass': secret + "abcdefg132"}, secret, algorithm='HS256') == token:
-            return [True, None, None]
-        return [False, "Invalid token"]
+        secret =    str(os.getenv('API_SCRT', '!@ws4RT4ws212@#%'))
+        password =  str(os.getenv('API_PASS', 'password'))
+        try:
+            decoded = jwt.decode(token, secret, leeway=10, algorithms=['HS256'])
+            if decoded["password"] != hash(password + secret):
+                 raise
+        except jwt.ExpiredSignature:
+            return [False, "Signature expired", 403]
+        except:
+            return  [False, "Invalid token", 403]
+        return [True, None, None]
 
 class ret:
     def __init__(self, route = None, params=None) :

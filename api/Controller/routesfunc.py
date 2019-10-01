@@ -8,10 +8,10 @@ def getauth(cn, nextc):
     if not err[0]:
         return cn.toret.add_error(err[1], err[2])
     cn.pr = err[1]
-    err = [True, auth.gettoken(cn.pr["pass"])]
+    err = auth.gettoken(cn.pr["pass"])
     return cn.call_next(nextc, err)
 
-def auth(cn, nextc):
+def myauth(cn, nextc):
     err = check.contain(cn.pr, ["token"])
     if not err[0]:
         return cn.toret.add_error(err[1], err[2])
@@ -63,6 +63,14 @@ def changedata(cn, nextc):
         return cn.toret.add_error(err[1], err[2])
     cn.pr = err[1]
     err = USERS[str(cn.pr["id"])].setdata(cn.pr["index"], cn.pr["value"])
+    return cn.call_next(nextc, err)
+
+def changecharge(cn, nextc):
+    err = check.contain(cn.pr, ["id", "charge"])
+    if not err[0]:
+        return cn.toret.add_error(err[1], err[2])
+    cn.pr = err[1]
+    err = USERS[str(cn.pr["id"])].setcharge(cn.pr["charge"])
     return cn.call_next(nextc, err)
 
 def allinfos(cn, nextc):
