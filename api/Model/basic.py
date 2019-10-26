@@ -45,7 +45,7 @@ class ret:
         return self.data
 
     def ret(self):
-        for i in []:
+        for i in ['pass', 'token']:
             if self.data["queryInfos"]["params"]:
                 if i in self.data["queryInfos"]["params"]:
                     del self.data["queryInfos"]["params"][i]
